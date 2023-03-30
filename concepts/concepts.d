@@ -3,10 +3,10 @@
 
 import std.traits : ReturnType;
 
-enum isCompareble(T) = is(ReturnType!(() => T.init < T.init) == bool);
+enum isComparable(T) = is(ReturnType!(() => T.init < T.init) == bool);
 
-static assert(isCompareble!int);
-static assert(!isCompareble!void);
+static assert(isComparable!int);
+static assert(!isComparable!void);
 
 
 enum isStackLike(S) = 
