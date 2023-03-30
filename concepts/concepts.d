@@ -9,10 +9,11 @@ static assert(isComparable!int);
 static assert(!isComparable!void);
 
 
-enum isStackLike(S) = 
-    is(typeof(S.pop) == return)
-    && is(typeof(S.push(ReturnType!(S.pop).init)) == void)
-    && is(typeof(S.length) == size_t);
+enum isStackLike(T) =
+    is(T == S!Elem, alias Elem, alias S)
+    && is(typeof(T.pop()) == Elem)
+    && is(typeof(T.push(Elem.init)) == void)
+    && is(typeof(T.length) == size_t);
 
 struct Stack(T)
 if (__traits(compiles, T.init))
