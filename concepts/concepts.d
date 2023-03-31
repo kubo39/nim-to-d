@@ -65,22 +65,15 @@ unittest
 }
 
 enum isAnyMatrix(M) =
-    is(M == S!(R, C, T), alias S, alias R, alias C, alias T)
-    && !is(R)
-    && is(typeof(R) == int)
-    && !is(C)
-    && is(typeof(C) == int)
+    is(M == S!(R, C, T), alias S, int R, int C, alias T)
     && is(typeof(M.rows()) == int)
     && is(typeof(M.cols()) == int)
     && is(typeof(M[0, 0]) == T)
     && is(typeof(M[0, 0] = T.init));
 
 enum isAnySquareMatrix(M) =
-    is(M == S!(R, C, T), alias S, alias R, alias C, alias T)
-    && !is(R)
-    && !is(C)
+    is(M == S!(R, C, T), alias S, int R, int C, alias T)
     && (R == C)
-    && is(typeof(R) == int)
     && is(typeof(M.rows()) == int)
     && is(typeof(M.cols()) == int)
     && is(typeof(M[0, 0]) == T)
