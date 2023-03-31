@@ -25,3 +25,73 @@ if (__traits(compiles, T.init))
 
 static assert(isStackLike!(Stack!int));
 static assert(!__traits(compiles, Stack!void));
+
+
+// =======================================================-
+
+struct Matrix(int M, int N, T)
+{
+private:
+    T[M*N] data;
+
+public:
+    T opIndex(int m, int n)
+    {
+        return data[m * N + n];
+    }
+
+    void opIndexAssign(T v, int m, int n)
+    {
+        data[m * N + n] = v;
+    }
+
+    int rows()
+    {
+        return M;
+    }
+
+    int cols()
+    {
+        return N;
+    }
+}
+
+unittest
+{
+    Matrix!(3, 3, int) m;
+    assert(m[0, 1] == 0);
+    m[0, 1] = 42;
+    assert(m[0, 1] == 42);
+}
+
+enum isAnyMatrix(M) =
+    is(M == S!(R, C, T), alias S, alias R, alias C, alias T)
+    && !is(R)
+    && !is(C)
+    && is(typeof(M.rows()) == int)
+    && is(typeof(M.cols()) == int)
+    && is(typeof(M[0, 0]) == T);
+
+enum isAnySquareMatrix(M) =
+    is(M == S!(R, C, T), alias S, alias R, alias C, alias T)
+    && !is(R)
+    && !is(C)
+    && (R == C)
+    && is(typeof(M.rows()) == int)
+    && is(typeof(M.cols()) == int)
+    && is(typeof(M[0, 0]) == T);
+
+T transposed(T)(T m) if (isAnySquareMatrix!T)
+{
+    foreach (r; 0 .. m.rows())
+        foreach (c; 0 .. m.cols())
+            m[r, c] = m[c, r];
+    return m;
+}
+
+unittest
+{
+    Matrix!(3, 3, int) m;
+    auto n = transposed(m);
+    assert(m == n);
+}
